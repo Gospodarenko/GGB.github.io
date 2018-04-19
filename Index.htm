@@ -1,0 +1,150 @@
+<!doctype html>
+ 	<meta charset="utf-8">
+	<title>Помоги спасти планету!</title>
+	<link rel="stylesheet" type="text/css" href="mygame.css">
+ <center>
+ <div id="game">
+ 	<div id="stage" >
+ 		<div id="background"></div>
+ 		<div id="spaceship"></div>
+ 		<div id="alien"></div>
+ 		<div id="missile"></div>
+ 		<div id="explosion"></div>
+ 	</div>
+ 	<button>Огонь! </button>
+ 	<center><input id="inputX" type="text" placeholder="X..." size = "5" autofocus>
+ 	<input id="inputY" type="text" placeholder="Y..." size = "5" autofocus></center>
+ 	</div>
+	<p><font color="white" face="Arial"></p>
+ 	<p id="output">Помоги спасти планету от пришельца!<br> Введите значение <strong>X</strong> (0–280) и <strong>Y</strong> (0–250), а затем нажмите на кнопку.</p>
+ 	<br>
+ 	</center>
+
+ 	<script>
+ 	var alienX = 80;
+ 	var alienY = 20;
+ 	var guessX = 0;
+ 	var guessY = 0;
+ 	var shotsRemaining = 8;
+ 	var shotsMade = 0;
+ 	var gameState = "";
+ 	var gameWon = false;
+
+ 	var spaceship = document.querySelector ("#spaceship");
+ 	var alien = document.querySelector ("#alien");
+ 	var missile = document.querySelector ("#missile");
+ 	var explosion = document.querySelector ("explosion");
+
+ 	var inputX = document.querySelector ("#inputX");
+ 	var inputY = document.querySelector ("#inputY");
+ 	var output = document.querySelector ("#output");
+
+ 	var button = document.querySelector ("button");
+ 	button.style.cursor = "pointer";
+ 	button.addEventListener ("click", clickHandler, false);
+
+ 	window.addEventListener("keydown", keydownHandler, false);
+ 	function keydownHandler(event)
+ 	{
+ 		if(event.keyCode === 13)
+ 			{
+ 				validateInput();
+ 			}
+ 		}
+ 	function render ()
+ 	{
+ 		alien.style.left = alienX + "px";
+ 		alien.style.top = alienY + "px";
+
+ 		spaceship.style.left = guessX + "px";
+
+ 		missile.style.left = guessX + "px";
+ 		missile.style.top = guessY + "px";
+
+ 		if (gameWon)
+ 		{
+ 			document.getElementById('explosion').style.display = 'block';
+ 			document.getElementById('alien').style.display = 'none';
+ 			document.getElementById('missile').style.display = 'none';
+ 			explosion.style.left = guessX + "px";
+ 		}
+ 	}
+ 	function clickHandler ()
+ 	{
+ 		validateInput ();
+ 	}
+ 	function playGame ()
+ 	{
+ 		shotsRemaining -=1;
+ 		shotsMade +=1;
+ 		gameState = "<br> Ракеты:" + shotsMade + ". Осталось:" + shotsRemaining + ".";
+ 		guessX = parseInt (inputX.value);
+ 		guessY = parseInt (inputY.value);
+
+ 		if (guessX >= alienX && guessX <= alienX + 20)
+ 		{
+ 			if (guessY >= alienY && guessY <= alienY + 20)
+ 			{
+ 				gameWon = true;
+ 				endGame();
+ 			}
+ 		}
+ 		else 
+ 		{
+ 			output.innerHTML = "Мимо!" + gameState;
+ 			if (shotsRemaining < 1)
+ 			{
+ 				endGame ();
+ 			}
+ 		}
+ 		if (!gameWon)
+ 		{
+ 			alienX = Math.floor (Math.random () * 280);
+ 			alienY += 30;
+ 		}
+ 		render (); 
+ 		console.log("X:" + alienX); 
+ 		console.log ("Y:" + alienY);
+ 	}
+ 	function endGame ()
+ 	{
+ 		if (gameWon)
+ 		{
+ 			output.innerHTML = "Ура!Победа! Вы спасли планету!" + "<br>" + "Ракет израсходовано:" + shotsMade + ".";
+ 		}
+ 		else 
+ 		{
+ 			output.innerHTML = "Вы не смогли помочь!" + "<br>" + "Землю атаковали пришельцы!";
+ 		}
+ 		button.removeEventListener("click", clickHandler, false);
+ 		button.disabled = true;
+ 		window.removeEventListener("keydown", keydownHandler, false);
+ 
+ 	}
+ 	function validateInput()
+ 	{
+ 		guessX = parseInt(inputX.value);
+ 		guessY = parseInt(inputY.value);
+ 		if (isNaN(guessX) || isNaN(guessY))
+ 			{
+ 				output.innerHTML = "Пожалуйста, введите число.";
+ 			}
+ 			else if(guessX > 280 || guessX < 0)
+ 				{
+ 					output.innerHTML = "Значение X должно быть от 0 до 280!";
+ 				}
+ 				else if(guessY > 250 || guessY < 0)
+ 					{
+ 						output.innerHTML = "Значение Y должно быть от 250 до 0!";
+ 					}
+ 					else
+ 						{
+ 							playGame();
+ 						}
+ 	
+
+ 	}
+
+</script>
+
+</html>
